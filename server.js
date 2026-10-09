@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 const app = fastify({ logger: false });
 await app.register(cors, { origin: true });
 
-const BASE = "https://kwinstore.com";
-const KEY = "6cd333eb6f42c778fb6ecbfd6fe8f14337f376d8b7fca424";
+const BASE = "https://kwinstore.com";  // Hoặc domain API của bạn
+const KEY = "6cd333eb6f42...ca424";    // API key thật của bạn
 const TOOLS = {
   lc79_hu:   {name:"LC79 HŨ (TÀI XỈU)",  url:`${BASE}/lc79/tx/history/${KEY}`,    A:"TÀI",   B:"XỈU",   tables:false},
   lc79_md5:  {name:"LC79 MD5",            url:`${BASE}/lc79/md5/history/${KEY}`,   A:"TÀI",   B:"XỈU",   tables:false},
