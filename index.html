@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI VIP PRO — HACKER TERMINAL</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',monospace}
+body{background:#0a0e17;color:#00ff9c;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-2;
+  background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(0,255,156,.08),transparent 60%),#0a0e17}
+body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(0,255,156,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,156,.04) 1px,transparent 1px);
+  background-size:30px 30px;animation:gm 20s linear infinite}
+@keyframes gm{0%{background-position:0 0}100%{background-position:30px 30px}}
+.wrap{max-width:520px;margin:0 auto;padding:24px 16px 80px}
+.term-header{border:1px solid #00ff9c44;border-radius:8px;padding:14px;margin-bottom:18px;background:#0d1420cc;position:relative;overflow:hidden}
+.term-header::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent,#00ff9c,transparent);animation:st 3s linear infinite}
+@keyframes st{to{left:100%}}
+.term-title{font-size:18px;font-weight:900;color:#00ff9c;text-shadow:0 0 12px #00ff9c88;letter-spacing:2px;text-align:center}
+.term-sub{font-size:10px;color:#00ff9c88;text-align:center;margin-top:6px;letter-spacing:1px}
+.term-box{background:#0d1420cc;border:1px solid #00ff9c33;border-radius:8px;padding:16px;margin-bottom:14px}
+label{display:block;font-size:11px;color:#00ff9c88;margin-bottom:6px;letter-spacing:1px}
+select{width:100%;padding:10px 12px;background:#0a0e17;border:1px solid #00ff9c55;border-radius:6px;color:#00ff9c;font-size:14px;outline:none;font-family:inherit;margin-bottom:10px}
+select:focus{border-color:#00ff9c;box-shadow:0 0 10px #00ff9c44}
+.btn{width:100%;padding:14px;border-radius:8px;border:1px solid #00ff9c;background:linear-gradient(135deg,#00ff9c22,#00ff9c08);color:#00ff9c;font-weight:900;font-size:15px;cursor:pointer;letter-spacing:3px;transition:.25s;text-shadow:0 0 10px #00ff9c88;box-shadow:0 0 20px #00ff9c33}
+.btn:hover{background:#00ff9c33;box-shadow:0 0 30px #00ff9c66;transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.loading{display:none;text-align:center;padding:24px;color:#00ff9c88}
+.loading.show{display:block}
+.spinner{width:36px;height:36px;margin:0 auto 10px;border:3px solid #00ff9c22;border-top-color:#00ff9c;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.result{display:none;margin-top:16px}
+.result.show{display:block;animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pred-ball{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;margin:10px auto;letter-spacing:1px;animation:bf 3s ease-in-out infinite;color:#fff;position:relative}
+@keyframes bf{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pred-ball::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid currentColor;opacity:.4;animation:rp 1.8s infinite}
+@keyframes rp{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.1);opacity:.7}}
+.ball-tai{background:linear-gradient(135deg,#ff4466,#ff8844);box-shadow:0 0 40px #ff446688;color:#fff}
+.ball-xiu{background:linear-gradient(135deg,#00ff9c,#00ccff);box-shadow:0 0 40px #00ff9c88;color:#003322}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;font-size:12px}
+.meta div{background:#0a0e17;border:1px solid #00ff9c22;padding:8px;border-radius:6px}
+.meta .lbl{font-size:9px;color:#00ff9c66;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.cb{height:6px;background:#00ff9c11;border-radius:3px;overflow:hidden;margin-top:4px}
+.cf{height:100%;background:linear-gradient(90deg,#00ff9c,#00ccff);box-shadow:0 0 8px #00ff9c}
+.hb{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;margin:2px;color:#fff}
+.ht{background:linear-gradient(135deg,#ff4466,#ff8844)}
+.hx{background:linear-gradient(135deg,#00ff9c,#00ccff);color:#003322}
+.err{color:#ff4466;text-align:center;margin-top:10px;font-size:12px;text-shadow:0 0 8px #ff446688}
+.badge{display:inline-block;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:1px;font-weight:700;margin:2px}
+.b-regime{background:#00ccff22;color:#00ccff;border:1px solid #00ccff44}
+.b-pat{background:#ffd96622;color:#ffd966;border:1px solid #ffd96644}
+
+/* ===== ROBOT WIDGET (ẩn ban đầu) ===== */
+#robot{position:fixed;top:50%;right:20px;transform:translateY(-50%);z-index:9999;display:none;align-items:center;cursor:grab}
+#robot.show{display:flex}
+#robot img{width:70px;height:70px;pointer-events:none;filter:drop-shadow(0 0 12px #00ff88);animation:hoverR 3s ease-in-out infinite}
+@keyframes hoverR{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#rbox{background:linear-gradient(135deg,rgba(10,15,25,.95),rgba(20,25,40,.95));color:#fff;padding:12px 16px;margin-right:8px;border-radius:12px;min-width:220px;backdrop-filter:blur(10px);border:2px solid #00ff88;border-right:5px solid #00ff88;box-shadow:0 0 20px rgba(0,255,136,.4);font-size:13px;position:relative;overflow:hidden;transition:border-color .4s}
+#rbox::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{left:-100%}20%{left:100%}100%{left:100%}}
+.r-tai{color:#00ff88;font-weight:900;text-shadow:0 0 12px #00ff88}
+.r-xiu{color:#ff4466;font-weight:900;text-shadow:0 0 12px #ff4466}
+.r-dot{display:inline-block;width:7px;height:7px;background:#00ff88;border-radius:50%;margin-right:4px;box-shadow:0 0 6px #00ff88;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.r-vipbar{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00ff88,#ffd966,#00ff88);background-size:200% auto;animation:flow 2s linear infinite}
+@keyframes flow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@media(max-width:600px){#robot img{width:50px;height:50px}#rbox{min-width:170px;padding:8px 10px;font-size:11px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="term-header">
+    <div class="term-title">╔══ AI VIP PRO ══╗</div>
+    <div class="term-sub">HACKER TERMINAL · 20 TÍN HIỆU + 63 CẦU + PATTERN8 · 8 TOOL + BCR</div>
+  </div>
+
+  <div class="term-box">
+    <label>▸ CHỌN CÔNG CỤ:</label>
+    <select id="tool">
+      <option value="lc79_hu">🎲 LC79 — HŨ (TÀI XỈU)</option>
+      <option value="lc79_md5">🎲 LC79 — MD5</option>
+      <option value="hit_hu">🎯 HITCLUB — HŨ (TÀI XỈU)</option>
+      <option value="hit_md5">🎯 HITCLUB — MD5</option>
+      <option value="max789_hu">🎰 MAX789 — HŨ (TÀI XỈU)</option>
+      <option value="max789_md5">🎰 MAX789 — MD5</option>
+      <option value="sunwin_hu">☀️ SUNWIN — HŨ (TÀI XỈU)</option>
+      <option value="bcr">♠️ BCR — BACCARAT (có chọn bàn)</option>
+    </select>
+    <div id="tableWrap" style="display:none">
+      <label>▸ CHỌN BÀN (BCR):</label>
+      <select id="tableSel"></select>
+    </div>
+    <button class="btn" id="btn" onclick="doP()">⚡ DỰ ĐOÁN NGAY</button>
+  </div>
+
+  <div class="loading" id="ld"><div class="spinner"></div><div style="font-size:12px">ĐANG QUÉT CẦU... ĐANG SO KHỚP 63 CẦU MẪU...</div></div>
+
+  <div class="result" id="rs">
+    <div class="term-box" style="text-align:center">
+      <div style="font-size:11px;color:#00ff9c88;letter-spacing:2px" id="rg"></div>
+      <div class="pred-ball" id="rb"></div>
+      <div style="margin-top:8px">
+        <span class="badge b-regime" id="rreg"></span>
+        <span class="badge b-pat" id="rpat" style="display:none"></span>
+      </div>
+      <div class="meta">
+        <div><div class="lbl">Tin cậy</div><div id="rc" style="font-weight:900;font-size:16px;color:#00ccff"></div><div class="cb"><div class="cf" id="rcb"></div></div></div>
+        <div><div class="lbl">Phiên</div><div id="rl" style="font-weight:900;font-size:16px"></div></div>
+        <div><div class="lbl">Tín hiệu</div><div id="rsig" style="font-weight:900;font-size:16px"></div></div>
+        <div><div class="lbl">Cập nhật</div><div id="rt" style="font-weight:700;font-size:12px"></div></div>
+      </div>
+      <div style="margin-top:14px;text-align:left"><div class="lbl" style="font-size:9px;color:#00ff9c66;letter-spacing:1px;margin-bottom:4px">LỊCH SỬ 20 PHIÊN:</div><div id="rh"></div></div>
+    </div>
+  </div>
+  <div class="err" id="er"></div>
+</div>
+
+<!-- ===== ROBOT WIDGET (ẩn, hiện sau khi ấn dự đoán) ===== -->
+<div id="robot">
+  <div id="rbox">
+    <div class="r-vipbar"></div>
+    <span class="r-dot"></span><b style="color:#00ff88;font-size:13px">🤖 ROBOT VIP</b>
+    <div id="rcontent" style="margin-top:8px;font-size:11px;color:#aaa">Đang chờ lệnh...</div>
+  </div>
+  <img src="https://i.postimg.cc/rwkZQhxp/Robot.gif" alt="Robot">
+</div>
+
+<script>
+let curTable=null, hasPredicted=false, autoTimer=null;
+const toolSel=document.getElementById('tool');
+const tableWrap=document.getElementById('tableWrap');
+const tableSel=document.getElementById('tableSel');
+
+toolSel.onchange=async()=>{
+  if(toolSel.value==='bcr'){
+    tableWrap.style.display='block';
+    try{
+      const r=await fetch('/api/tables?tool=bcr');const d=await r.json();
+      tableSel.innerHTML='<option value="">-- Chọn bàn --</option>'+d.tables.map(t=>'<option value="'+t.id+'">'+t.name+'</option>').join('');
+    }catch(e){}
+  }else{
+    tableWrap.style.display='none';curTable=null;
+  }
+};
+tableSel.onchange=()=>{curTable=tableSel.value;if(hasPredicted)doP();};
+
+async function doP(){
+  document.getElementById('er').textContent='';
+  document.getElementById('ld').classList.add('show');
+  document.getElementById('rs').classList.remove('show');
+  document.getElementById('btn').disabled=true;
+  try{
+    let url='/api/predict?tool='+toolSel.value;
+    if(toolSel.value==='bcr'){
+      if(!curTable){document.getElementById('er').textContent='⚠️ Vui lòng chọn bàn BCR trước!';document.getElementById('ld').classList.remove('show');document.getElementById('btn').disabled=false;return;}
+      url+='&table='+encodeURIComponent(curTable);
+    }
+    const r=await fetch(url);const d=await r.json();
+    if(d.error){document.getElementById('er').textContent='❌ '+d.error;}
+    else{
+      hasPredicted=true;
+      // Hiện robot widget (ẩn ban đầu, ấn vào web thì mới hiện)
+      document.getElementById('robot').classList.add('show');
+      document.getElementById('rg').textContent=d.tool+(curTable?' · BÀN '+curTable:'');
+      const b=document.getElementById('rb');b.textContent=d.prediction;
+      b.className='pred-ball '+(d.prediction===d.A?'ball-tai':'ball-xiu');
+      document.getElementById('rc').textContent=d.confidence+'%';
+      document.getElementById('rcb').style.width=d.confidence+'%';
+      document.getElementById('rl').textContent=d.last_id||(d.history_len+1);
+      document.getElementById('rsig').textContent=d.signals+'/20';
+      document.getElementById('rt').textContent=new Date().toLocaleTimeString('vi-VN');
+      document.getElementById('rreg').textContent='CẦU: '+(d.regime||'balanced');
+      const pat=document.getElementById('rpat');
+      if(d.pattern_hit){pat.style.display='inline-block';pat.textContent='🎯 '+d.pattern_hit;}else{pat.style.display='none';}
+      document.getElementById('rh').innerHTML=(d.history||[]).map(h=>'<span class="hb '+(h===d.A?'ht':'hx')+'">'+(h===d.A?'T':'X')+'</span>').join('');
+      document.getElementById('rs').classList.add('show');
+      // Cập nhật robot widget
+      const isA=d.prediction===d.A;
+      document.getElementById('rbox').style.borderColor=isA?'#00ff88':'#ff4466';
+      document.getElementById('rcontent').innerHTML=`
+        <div style="font-size:10px;color:#ffd966;letter-spacing:1px">PHIÊN: <b>#${d.last_id||(d.history_len+1)}</b></div>
+        <div style="font-size:26px;font-weight:900;margin:4px 0" class="${isA?'r-tai':'r-xiu'}">${d.prediction}</div>
+        <div style="font-size:10px;color:#00ffff;font-weight:bold;text-transform:uppercase">${d.pattern_hit||d.regime||'AI'}</div>
+        <div style="margin-top:6px;font-size:11px">Tỷ lệ: <b style="color:${d.confidence>=90?'#00ff88':(d.confidence>=80?'#ffd966':'#ff4466')}">${d.confidence}%</b></div>`;
+      // Auto refresh
+      if(autoTimer)clearInterval(autoTimer);
+      autoTimer=setInterval(doP,15000);
+    }
+  }catch(e){document.getElementById('er').textContent='❌ Lỗi kết nối server';}
+  finally{document.getElementById('ld').classList.remove('show');document.getElementById('btn').disabled=false;}
+}
+
+// Kéo thả robot
+const robot=document.getElementById('robot');
+let drag=false,sx=0,sy=0;
+robot.addEventListener('mousedown',e=>{drag=true;sx=e.clientX-robot.offsetLeft;sy=e.clientY-robot.offsetTop;});
+robot.addEventListener('touchstart',e=>{drag=true;const t=e.touches[0];sx=t.clientX-robot.offsetLeft;sy=t.clientY-robot.offsetTop;});
+document.addEventListener('mousemove',e=>{if(!drag)return;robot.style.left=e.clientX-sx+'px';robot.style.top=e.clientY-sy+'px';});
+document.addEventListener('touchmove',e=>{if(!drag)return;const t=e.touches[0];robot.style.left=t.clientX-sx+'px';robot.style.top=t.clientY-sy+'px';},{passive:false});
+document.addEventListener('mouseup',()=>drag=false);
+document.addEventListener('touchend',()=>drag=false);
+</script>
+</body>
+</html>
