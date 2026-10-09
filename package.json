@@ -1,0 +1,7 @@
+{
+  "name": "ai-vip-pro-one",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {"node": ">=18.0.0"},
+  "dependencies": {"fastify": "^4.28.1", "@fastify/cors": "^9.0.1", "node-fetch": "^3.3.2"}
+}
